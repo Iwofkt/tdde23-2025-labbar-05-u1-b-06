@@ -1,11 +1,17 @@
-from numpy._core.strings import isupper
+"""
+Different ways of splitting a string into one piece
+    Containing lowercase, underscores and dots
+    and another piece containing uppercase, spaces and pipes.
+"""
 from numpy._core.strings import islower
+from numpy._core.strings import isupper
 
-#A recursive way of splitting a string into one piece
-#Containing lowercase, underscores and dots
-#and another piece containing uppercase, spaces and pipes.
-def split_rec(string: str, split1 = "", split2 = "") -> tuple[str,str]:
-
+def split_rec(string: str, split1="", split2="") -> tuple[str, str]:
+    """
+    A recursive way of splitting a string into one piece
+    Containing lowercase, underscores and dots
+    and another piece containing uppercase, spaces and pipes.
+    """
     current = string[0]
 
     if isupper(current) or current == " " or current == "|":
@@ -14,14 +20,16 @@ def split_rec(string: str, split1 = "", split2 = "") -> tuple[str,str]:
     elif islower(current) or current == "_" or current == ".":
         split2 = str(split2 + current)
 
-    if len(string)-1 <= 0:
+    if len(string) - 1 <= 0:
         return split1, split2
-    return split_rec(string[1-len(string):], split1, split2)
+    return split_rec(string[1 - len(string):], split1, split2)
 
-#A iterative way of splitting a string into one piece
-#Containing lowercase, underscores and dots
-#and another piece containing uppercase, spaces and pipes.
 def split_it(string):
+    """
+    An iterative way of splitting a string into one piece
+    Containing lowercase, underscores and dots
+    And another piece containing uppercase, spaces and pipes.
+    """
     split1 = ""
     split2 = ""
     for i in string:
@@ -31,7 +39,3 @@ def split_it(string):
         elif islower(i) or i == "_" or i == ".":
             split2 = str(split2 + i)
     return split1, split2
-
-
-print(split_rec("HELLO. Ilove_"))
-print(split_it("HELLO. Ilove_"))

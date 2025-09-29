@@ -1,46 +1,41 @@
-#A program that can decipher expressions consisting of logic operators and variables
-
 def interpret(expression, info):
+    """
+    Recursively interprets a logical expression represented as nested lists.
 
-    # First, evaluate the expression to replace variables with their values
-    for index, i in enumerate(expression):
-        # Interpret all nestled lists
-        if isinstance(i, list):
-            expression[index] = interpret(i, info)
+    Operators:
+    - "NOT": NOT binary operator, format ["NOT", expr]
+    - "AND", "OR": binary operators, format [left, operator, right]
 
-        # Exchange all varietals for info counterpart
-        elif i in info:
-            expression[index] = info[i]
+    Operands can be:
+    - "true" or "false" (strings)
+    - Variables (strings) looked up in info dict
+    - Nested expressions (lists)
 
+    :param expression: (list or str): logical expression or variable.
+    :param info: (dict): Mapping variable names to "true" or "false".
 
-    # Handle the "NOT" logic
-    if "NOT" in expression:
-        for index, i in enumerate(expression):
+    :return: str: Evaluated "true" or "false" string.
+    """
+    if not isinstance(expression, list):
+        # Base case: variable
+        return info.get(expression, expression)
 
-            #Update the value after NOT in the expression
-            if i == "NOT" and index + 1 < len(expression):
-                next_value = expression[index + 1]
-                if next_value == "true":
-                    return "false"
+    # Handle NOT operator
+    if len(expression) == 2 and expression[0] == "NOT":
+        val = interpret(expression[1], info)
+        return "false" if val == "true" else "true" if val == "false" else val
 
-                elif next_value == "false":
-                    return "true"
+    # Handle ANDs and ORs
+    if len(expression) == 3:
+        left, operator, right = expression
+        left_val = interpret(left, info)
+        right_val = interpret(right, info)
 
-    # Handle the "OR" logic
-    if "OR" in expression:
-        if "true" in (expression[2], expression[0]):
-            return "true"
-        return "false"
+        if operator == "AND":
+            return "true" if left_val == "true" and right_val == "true" else "false"
+        elif operator == "OR":
+            return "true" if left_val == "true" or right_val == "true" else "false"
 
-    # Handle the "AND" logic
-    if "AND" in expression:
-        if "true" in expression[2] and "true" in expression[0]:
-            return "True"
-        return "false"
-
-    # Return the expression unchanged
-    return expression
-
-
-interpret(["NOT", ["NOT", ["NOT", ["cat_asleep", "OR", ["NOT", "cat_asleep"]]]]],
-               {"cat_asleep": "false"})
+    if "true" in expression:
+        return "true"
+    return "false"
