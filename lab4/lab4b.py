@@ -1,4 +1,4 @@
-def interpret(expression, info: dict) -> str:
+def interpret(expression, info: dict) -> str | None:
     """
     Recursively interprets a logical expression represented as nested lists.
 
@@ -35,4 +35,4 @@ def interpret(expression, info: dict) -> str:
             return "true" if left_val == "true" and right_val == "true" else "false"
         elif operator == "OR":
             return "true" if left_val == "true" or right_val == "true" else "false"
-    return expression
+    return None
