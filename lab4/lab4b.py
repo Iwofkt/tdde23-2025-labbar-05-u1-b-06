@@ -1,4 +1,4 @@
-def interpret(expression, info):
+def interpret(expression, info: dict) -> str:
     """
     Recursively interprets a logical expression represented as nested lists.
 
@@ -11,8 +11,8 @@ def interpret(expression, info):
     - Variables (strings) looked up in info dict
     - Nested expressions (lists)
 
-    :param expression: (list or str): logical expression or variable.
-    :param info: (dict): Mapping variable names to "true" or "false".
+    :param expression: list or str: logical expression or variable.
+    :param info: dict: Mapping variable names to "true" or "false".
 
     :return: str: Evaluated "true" or "false" string.
     """
@@ -35,7 +35,4 @@ def interpret(expression, info):
             return "true" if left_val == "true" and right_val == "true" else "false"
         elif operator == "OR":
             return "true" if left_val == "true" or right_val == "true" else "false"
-
-    if "true" in expression:
-        return "true"
-    return "false"
+    return expression

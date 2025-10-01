@@ -1,41 +1,46 @@
-"""
-Different ways of splitting a string into one piece
-    Containing lowercase, underscores and dots
-    and another piece containing uppercase, spaces and pipes.
-"""
-from numpy._core.strings import islower
-from numpy._core.strings import isupper
-
-def split_rec(string: str, split1="", split2="") -> tuple[str, str]:
+def split_rec(string: str, split1: str = "", split2: str = "") -> tuple[str, str]:
     """
-    A recursive way of splitting a string into one piece
-    Containing lowercase, underscores and dots
-    and another piece containing uppercase, spaces and pipes.
+    Recursively split a string into two parts:
+    One with uppercase letters, spaces, and pipes
+    One with lowercase letters, underscores, and dots
+
+    :param string: str: The input string to be split.
+    :param split1: str: Accumulator for uppercase, spaces, and pipes (used during recursion).
+    :param split2: str: Accumulator for lowercase, underscore, and dot characters (used during recursion).
+    :return: tuple[str, str]: A tuple where:
+    First element contains uppercase letters, spaces, and pipes.
+    Second element contains lowercase letters, underscores, and dots.
     """
     current = string[0]
 
-    if isupper(current) or current == " " or current == "|":
-        split1 = str(split1 + current)
+    if current.islower() or current in {"_", "."}:
+        split1 += current
+    elif current.isupper() or current in {" ", "|"}:
+        split2 += current
 
-    elif islower(current) or current == "_" or current == ".":
-        split2 = str(split2 + current)
-
-    if len(string) - 1 <= 0:
+    if len(string) == 1:
         return split1, split2
-    return split_rec(string[1 - len(string):], split1, split2)
+    return split_rec(string[1:], split1, split2)
 
-def split_it(string):
+
+def split_it(string: str) -> tuple[str, str]:
     """
-    An iterative way of splitting a string into one piece
-    Containing lowercase, underscores and dots
-    And another piece containing uppercase, spaces and pipes.
+    Iteratively split a string into two parts:
+    One with uppercase letters, spaces, and pipes
+    One with lowercase letters, underscores, and dots
+
+    :param string: str: The input string to be split.
+    :return: tuple[str, str]:
+    First element contains uppercase letters, spaces, and pipes.
+    Second element contains lowercase letters, underscores, and dots.
     """
     split1 = ""
     split2 = ""
-    for i in string:
-        if isupper(i) or i == " " or i == "|":
-            split1 = str(split1 + i)
 
-        elif islower(i) or i == "_" or i == ".":
-            split2 = str(split2 + i)
-    return split1, split2
+    for char in string:
+        if char.islower() or char in {"_", "."}:
+            split1 += char
+        elif char.isupper() or char in {" ", "|"}:
+            split2 += char
+
+    return split1 ,split2
