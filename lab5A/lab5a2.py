@@ -1,4 +1,6 @@
 import math
+from pprint import pprint
+
 
 def unsharp_mask(dim: int):
     """
@@ -28,3 +30,7 @@ def value(x, y):
     s = 4.5
     ret = (-1 / (2 * math.pi * s ** 2)) * math.e ** (-((x ** 2 + y ** 2) / (2 * s ** 2)))
     return ret
+
+
+# Test
+pprint(unsharp_mask(3))
