@@ -23,7 +23,7 @@ def interpret(expression, info: dict) -> str | None:
     # Handle NOT operator
     if len(expression) == 2 and expression[0] == "NOT":
         val = interpret(expression[1], info)
-        return "false" if val == "true" else "true" if val == "false" else val
+        return "false" if val == "true" else "true"
 
     # Handle ANDs and ORs
     if len(expression) == 3:

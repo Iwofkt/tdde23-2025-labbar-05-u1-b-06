@@ -1,28 +1,30 @@
 import cv2
 from cvlib import rgblist_to_cvimg
 
-def cvimg_to_list (file):
-    """
-    Creates a list of the BGR values for each pixel in an image
 
-    :param file: str: location of image to interpret
+def cvimg_to_list(image):
+    """
+    Creates a list of the BGR values for each pixel in an image.
+
+    :param image: numpy array: image to interpret
     :return: list: List of BGR vales for each pixel
     """
-    image = cv2.imread(file)
+    return [tuple(map(int, pixel)) for row in image for pixel in row]
 
-    bgr_list = [tuple(map(int, pixel)) for row in image for pixel in row]
 
-    return bgr_list
+# Test
+if __name__ == "__main__":
+    test_file = "image.png"
+    test_image = cv2.imread(test_file)
 
-#Test
-"""test_file = "image.png"
+    if test_image is None:
+        raise FileNotFoundError(f"Could not read image file: {test_file}")
 
-bgr_test_list = cvimg_to_list(test_file)
-print(bgr_test_list)
+    bgr_test_list = cvimg_to_list(test_image)
+    print(bgr_test_list)
 
-test_image = cv2.imread(test_file)
+    test_height, test_width = test_image.shape[:2]
+    cv2.imshow("test", rgblist_to_cvimg(bgr_test_list, test_height, test_width))
 
-test_height, test_width = test_image.shape[:2]
-cv2.imshow("test", rgblist_to_cvimg(bgr_test_list, int(test_height), int(test_width)))
-
-cv2.waitKey(0)"""
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

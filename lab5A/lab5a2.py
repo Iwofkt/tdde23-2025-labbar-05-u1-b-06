@@ -31,6 +31,8 @@ def value(x, y):
     ret = (-1 / (2 * math.pi * s ** 2)) * math.e ** (-((x ** 2 + y ** 2) / (2 * s ** 2)))
     return ret
 
-
 # Test
-pprint(unsharp_mask(3))
+if __name__ == "__main__":
+    from pprint import pprint
+    pprint(unsharp_mask(3))
+
