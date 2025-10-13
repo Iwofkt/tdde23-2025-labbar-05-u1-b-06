@@ -32,7 +32,7 @@ def remove_piece(board, x, y):
 # Move one piece from one place to another
 def move_piece(board, x1, y1, x2, y2):
     player_key = get_piece(board, x1, y1)
-    if player_key is None:
+    if not player_key:
         return False
     if remove_piece(board, x1, y1):
         if place_piece(board, x2, y2, player_key):

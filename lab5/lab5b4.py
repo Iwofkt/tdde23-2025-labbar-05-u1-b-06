@@ -1,41 +1,56 @@
 import cv2
-import random
 from lab5.cvlib import rgblist_to_cvimg
 from lab5.lab5a1 import cvimg_to_list
-from lab5.lab5b1 import pixel_constraint
 from lab5.lab5b2 import generator_from_image
-from lab5.lab5b3 import combine_images
 
 
 def gradient_condition(pixel):
-    return pixel[1]/255
+    """
+    Returnerar ett värde mellan 0 och 1 baserat på pixelns ljusstyrka.
+    """
+    return (pixel[0] + pixel[1] + pixel[2]) / (255.0*3)
+
+
+def combine_images(condition_list, condition_func, generator1, generator2):
+    """
+    Kombinerar två bilder med formeln: generator1 * condition + generator2 * (1 - condition)
+    """
+    return [
+        [
+            int(generator1(i)[0] * condition_func(pixel) + generator2(i)[0] * (1 - condition_func(pixel))), #B
+            int(generator1(i)[1] * condition_func(pixel) + generator2(i)[1] * (1 - condition_func(pixel))), #R
+            int(generator1(i)[2] * condition_func(pixel) + generator2(i)[2] * (1 - condition_func(pixel)))  #G
+        ]
+        for i, pixel in enumerate(condition_list)
+    ]
+
 
 if __name__ == "__main__":
-    """
-    Test function that combines a plane image with a starry sky effect using HSV color filtering.
-    """
-    # Read an image
-    plane_img = cv2.imread("plane.jpg")
+    # Ladda bilderna
+    img1 = cv2.imread("plane.jpg")
+    img2 = cv2.imread("image.png")
+    mask_img = cv2.imread("gradient.jpg")
 
-    # Create a filter that identifies the sky
-    condition = pixel_constraint(100, 150, 50, 200, 100, 255)
+    #Storlek fix
+    target_shape = img1.shape
+    if img2.shape != target_shape:
+        img2 = cv2.resize(img2, (target_shape[1], target_shape[0]))
+    if mask_img.shape != target_shape:
+        mask_img = cv2.resize(mask_img, (target_shape[1], target_shape[0]))
 
-    # Convert the original image to a list of HSV colors
-    hsv_list = cvimg_to_list(cv2.cvtColor(plane_img, cv2.COLOR_BGR2HSV))
-    plane_img_list = cvimg_to_list(plane_img)
+    # Konvertera till listor
+    mask_list = cvimg_to_list(mask_img)
+    img1_list = cvimg_to_list(img1)
+    img2_list = cvimg_to_list(img2)
 
-    # Create a generator that makes a starry sky
-    def generator1(index):
-        val = random.random() * 255 if random.random() > 0.99 else 0
-        return val, val, val
+    # Skapa generatorer
+    generator1 = generator_from_image(img1_list)
+    generator2 = generator_from_image(img2_list)
 
-    # Create a generator for the loaded image
-    generator2 = generator_from_image(plane_img_list)
+    # Kombinera bilderna
+    result = combine_images(mask_list, gradient_condition, generator1, generator2)
 
-    # Combine the two images into one, using the sky filter as a mask
-    result = combine_images(hsv_list, condition, generator1, generator2)
-
-    # Convert the result to a real image and display it
-    new_img = rgblist_to_cvimg(result, plane_img.shape[0], plane_img.shape[1])
-    cv2.imshow('Final image', new_img)
+    # Visa resultatet
+    new_img = rgblist_to_cvimg(result, img1.shape[0], img1.shape[1])
+    cv2.imshow('Kombinerad bild', new_img)
     cv2.waitKey(0)
