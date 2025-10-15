@@ -3,15 +3,15 @@ from lab5b1 import pixel_constraint
 
 def test_image_constrain():
     """
-    This test verifies that the functions returned from the
-    image constraint function correctly identifies
+    This test verifies that the function, returned from the
+    image constraint function, correctly identifies
     whether pixels fall within specified HSV ranges by testing:
     - Pixels within all ranges
     - Pixels at boundary values
     - Pixels outside each individual HSV component range
     """
 
-    func = pixel_constraint(100, 200, 50, 150, 75, 225)
+    is_black = pixel_constraint(100, 200, 50, 150, 75, 225)
 
     # Test 1: Valid pixel cases
     tests = [
@@ -26,7 +26,7 @@ def test_image_constrain():
     ]
 
     for pixel, expected, description in tests:
-        result = func(pixel)
+        result = is_black(pixel)
         assert result == expected, f"{description}. Got {result} for pixel {pixel}"
 
     # Test 2: Exception cases
@@ -35,18 +35,19 @@ def test_image_constrain():
         ((1, 2), "2-tuple (too short)"),
         ((1, 2, 3, 4), "4-tuple (too long)"),
         (("a", "b", "c"), "Non-numeric values"),
+        ((None,None,None), "Empty tuple")
     ]
 
     for input_val, description in exception_tests:
         try:
-            func(input_val)
+            is_black(input_val)
             print(f"{description} should raise ValueError")
         except ValueError:
-            break
+            None
 
     # Test 3: Float values (should work)
     try:
-        func((150.5, 100.2, 150.8))
+        is_black((150.5, 100.2, 150.8))
     except Exception as e:
         print(f"✗ Float values should work: {e}")
 

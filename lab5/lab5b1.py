@@ -19,7 +19,7 @@ def pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh):
              1 if the pixel is within range, else 0.
     """
 
-    def image_constrain(pixel):
+    def is_black(pixel):
         """
         Determines if a given HSV pixel is within the predefined HSV constraints.
 
@@ -34,7 +34,7 @@ def pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh):
             and vlow < v < vhigh
         )
 
-    return image_constrain
+    return is_black
 
 #test
 if __name__ == "__main__":

@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 importlib_has_started = True
         exit(1)
     if args.test.upper() == "pixel_constraint":
-        test_pixel_constraints()
+        test_pixel_constraint()
     elif args.test.upper() == "generator_from_image":
         test_generator_from_image()
     elif args.test == "combine_images": 
