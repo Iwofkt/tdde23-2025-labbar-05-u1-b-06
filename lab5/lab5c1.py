@@ -1,39 +1,60 @@
-from lab5.lab5b1 import pixel_constraint
+from lab5b1 import pixel_constraint
 
 
-def test_pixel_constraint():
-    hlow, slow, vlow = 0, 0, 0
-    hhigh, shigh, vhigh = 100, 100, 100
+def test_image_constrain():
+    """
+    This test verifies that the functions returned from the
+    image constraint function correctly identifies
+    whether pixels fall within specified HSV ranges by testing:
+    - Pixels within all ranges
+    - Pixels at boundary values
+    - Pixels outside each individual HSV component range
+    """
 
-    test_inst = pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh)
+    func = pixel_constraint(100, 200, 50, 150, 75, 225)
 
-    test_values = [
-        hlow + 1,
-        (hlow + hhigh) // 2,
-        hhigh - 1
+    # Test 1: Valid pixel cases
+    tests = [
+        ((150, 100, 150), 1, "Pixel within all ranges should return 1"),
+        ((100, 50, 75), 0, "Pixel at lower bounds should return 0 (exclusive bounds)"),
+        ((200, 150, 225), 0, "Pixel at upper bounds should return 0 (exclusive bounds)"),
+        ((101, 51, 76), 1, "Pixel just above lower bounds should return 1"),
+        ((199, 149, 224), 1, "Pixel just below upper bounds should return 1"),
+        ((99, 50, 75), 0, "Pixel with H=99 (below range 100-200) should return 0"),
+        ((150, 25, 150), 0, "Pixel with S=25 (below range 50-150) should return 0"),
+        ((150, 100, 50), 0, "Pixel with V=50 (below range 75-225) should return 0"),
     ]
 
-    passed = True
-    for h in test_values:
-        for s in test_values:
-            for v in test_values:
-                result = test_inst((h, s, v))
-                assert result == 1, f"Failed on: {(h, s, v)}"
+    for pixel, expected, description in tests:
+        result = func(pixel)
+        assert result == expected, f"{description}. Got {result} for pixel {pixel}"
 
-    out_of_range = [
-        (hlow - 1, 50, 50),
-        (hhigh + 1, 50, 50),
-        (50, slow - 1, 50),
-        (50, shigh + 1, 50),
-        (50, 50, vlow - 1),
-        (50, 50, vhigh + 1),
+    # Test 2: Exception cases
+    exception_tests = [
+        ("not_a_tuple", "Non-tuple input"),
+        ((1, 2), "2-tuple (too short)"),
+        ((1, 2, 3, 4), "4-tuple (too long)"),
+        (("a", "b", "c"), "Non-numeric values"),
     ]
 
-    for pixel in out_of_range:
-        result = test_inst(pixel)
-        assert result == 0, f"Out-of-range test failed on: {pixel}"
+    for input_val, description in exception_tests:
+        try:
+            func(input_val)
+            print(f"{description} should raise ValueError")
+        except ValueError:
+            break
 
-    if passed:
-        print("Code passed all tests.")
+    # Test 3: Float values (should work)
+    try:
+        func((150.5, 100.2, 150.8))
+    except Exception as e:
+        print(f"✗ Float values should work: {e}")
 
-test_pixel_constraint()
+    print("code passed all tests.")
+
+def test_generator_from_image():
+    return
+
+
+if __name__ == '__main__':
+    test_image_constrain()

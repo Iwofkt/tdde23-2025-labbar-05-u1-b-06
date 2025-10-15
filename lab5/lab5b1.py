@@ -29,9 +29,9 @@ def pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh):
         """
         h, s, v = pixel
         return int(
-            hlow <= h <= hhigh
-            and slow <= s <= shigh
-            and vlow <= v <= vhigh
+            hlow < h < hhigh
+            and slow < s < shigh
+            and vlow < v < vhigh
         )
 
     return image_constrain
