@@ -14,10 +14,10 @@ def combine_images(hsv_img_list, condition, condition_img, start_img):
     :param condition: function: Function that takes an HSV pixel and returns True/False
     :param condition_img: function: Generator function that provides pixels when condition is True
     :param start_img: function: Generator function that provides pixels when condition is False
-    :return: list: Combined list of pixel values
+    :return: list: Combined list of RGB pixel values
     """
-    condition_pixels = list(map(lambda x: x * 255, map(condition, hsv_img_list)))
-    return [condition_img(pixl_index) * pixl + start_img(pixl_index) * (1- pixl) for pixl_index, pixl in enumerate(condition_pixels)]
+    return [condition_img(i) if condition(hsv_pixel) else start_img(i)
+            for i, hsv_pixel in enumerate(hsv_img_list)]
 
 if __name__ == "__main__":
     """
