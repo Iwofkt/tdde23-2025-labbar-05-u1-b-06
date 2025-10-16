@@ -7,11 +7,6 @@ from lab5.lab5b2 import generator_from_image
 def gradient_condition(pixel):
     """
     Computes a normalized brightness value for a given pixel.
-    This function takes a single pixel in BGR format and returns its normalized
-    intensity.
-
-    :param pixel: tuple[int, int, int]: A pixel represented as a tuple (B, G, R) with values in [0, 255].
-    :return: float: A value between 0.0 and 1.0 representing the normalized intensity.
     """
     return pixel[0] / 255.0
 
@@ -32,16 +27,28 @@ def combine_images(condition_list, condition_func, generator1, generator2):
         A generator function that returns pixels from the second image given an index.
     :return: list[tuple[int, int, int]]
         A list of blended pixels in BGR format.
+    :raises: ValueError if any internal function raises an exception
     """
-    return [
-        [
-            int(generator1(i)[0] * condition_func(pixel) + generator2(i)[0] * (1 - condition_func(pixel))),
-            int(generator1(i)[1] * condition_func(pixel) + generator2(i)[1] * (1 - condition_func(pixel))),
-            int(generator1(i)[2] * condition_func(pixel) + generator2(i)[2] * (1 - condition_func(pixel)))
-        ]
-        for i, pixel in enumerate(condition_list)
-    ]
+    result = []
+    for i, pixel in enumerate(condition_list):
+        try:
+            # Try to get values from all functions
+            condition_val = condition_func(pixel)
+            pixel1 = generator1(i)
+            pixel2 = generator2(i)
 
+            # Calculate blended pixel
+            blended_pixel = [
+                int(pixel1[0] * condition_val + pixel2[0] * (1 - condition_val)),
+                int(pixel1[1] * condition_val + pixel2[1] * (1 - condition_val)),
+                int(pixel1[2] * condition_val + pixel2[2] * (1 - condition_val))
+            ]
+            result.append(blended_pixel)
+
+        except Exception as e:
+            raise ValueError(f"Error in combine_images at index {i}: {str(e)}") from e
+
+    return result
 
 
 if __name__ == "__main__":
@@ -56,7 +63,6 @@ if __name__ == "__main__":
         img2 = cv2.resize(img2, (target_shape[1], target_shape[0]))
     if mask_img.shape != target_shape:
         mask_img = cv2.resize(mask_img, (target_shape[1], target_shape[0]))
-
 
     # Konvertera till listor
     mask_list = cvimg_to_list(mask_img)

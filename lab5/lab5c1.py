@@ -1,7 +1,9 @@
+from lab5.lab5b2 import generator_from_image
+from lab5.lab5b4 import combine_images, gradient_condition
 from lab5b1 import pixel_constraint
 
 
-def test_image_constrain():
+def test_is_black():
     """
     This test verifies that the function, returned from the
     image constraint function, correctly identifies
@@ -14,7 +16,7 @@ def test_image_constrain():
     is_black = pixel_constraint(100, 200, 50, 150, 75, 225)
 
     # Test 1: Valid pixel cases
-    tests = [
+    edge_tests = [
         ((150, 100, 150), 1, "Pixel within all ranges should return 1"),
         ((100, 50, 75), 0, "Pixel at lower bounds should return 0 (exclusive bounds)"),
         ((200, 150, 225), 0, "Pixel at upper bounds should return 0 (exclusive bounds)"),
@@ -25,37 +27,144 @@ def test_image_constrain():
         ((150, 100, 50), 0, "Pixel with V=50 (below range 75-225) should return 0"),
     ]
 
-    for pixel, expected, description in tests:
+    for pixel, expected, description in edge_tests:
         result = is_black(pixel)
         assert result == expected, f"{description}. Got {result} for pixel {pixel}"
 
-    # Test 2: Exception cases
-    exception_tests = [
-        ("not_a_tuple", "Non-tuple input"),
-        ((1, 2), "2-tuple (too short)"),
-        ((1, 2, 3, 4), "4-tuple (too long)"),
-        (("a", "b", "c"), "Non-numeric values"),
-        ((None,None,None), "Empty tuple")
+
+    # Test 2: Invalid inputs using test list
+    invalid_inputs = [
+        ("not_a_tuple", "Non-tuple input should raise ValueError"),
+        ((1, 2), "2-tuple (too short) should raise ValueError"),
+        ((1, 2, 3, 4), "4-tuple (too long) should raise ValueError"),
+        (("a", "b", "c"), "Non-numeric values should raise ValueError"),
+        ((150.5, 100.2, 150.8), "Float values should raise ValueError"),
     ]
 
-    for input_val, description in exception_tests:
+    for input_val, description in invalid_inputs:
         try:
             is_black(input_val)
-            print(f"{description} should raise ValueError")
+            assert False, description
         except ValueError:
-            None
+            pass
 
-    # Test 3: Float values (should work)
-    try:
-        is_black((150.5, 100.2, 150.8))
-    except Exception as e:
-        print(f"✗ Float values should work: {e}")
 
-    print("code passed all tests.")
+    print("is_black passed all tests.")
+
 
 def test_generator_from_image():
-    return
+    """
+    Test the function returned by generator_from_image for both valid behavior
+    and proper exception handling when index is out of bounds.
+    """
+    # Create a simple test image list
+    test_image_list = [(0, 0, 0), (255, 255, 255), (128, 128, 128), (64, 64, 64)]
+
+    generator = generator_from_image(test_image_list)
+
+    # Test 1: Valid indices using test list
+    valid_tests = [
+        (0, (0, 0, 0), "Index 0 should return first pixel"),
+        (1, (255, 255, 255), "Index 1 should return second pixel"),
+        (2, (128, 128, 128), "Index 2 should return third pixel"),
+        (3, (64, 64, 64), "Index 3 should return fourth pixel")
+    ]
+
+    for index, expected, description in valid_tests:
+        result = generator(index)
+        assert result == expected, f"{description}. Got {result} for index {index}"
+
+    # Test 2: Invalid indices - should raise IndexError
+    invalid_tests = [
+        (4, "Index 4 (out of bounds) should raise IndexError"),
+        (-1, "Index -1 (negative index) should raise IndexError")
+    ]
+
+    for index, description in invalid_tests:
+        try:
+            generator(index)
+            assert False, description
+        except IndexError:
+            pass
+
+    # Test 3: Empty image list
+    empty_generator = generator_from_image([])
+    try:
+        empty_generator(0)
+        assert False, "Index 0 on empty list should raise IndexError"
+    except IndexError:
+        pass
+
+    print("generator_from_image passed all tests.")
+
+
+def test_combine_images():
+    """
+    Test combine_images function for both valid behavior and exception handling
+    when inner functions raise exceptions.
+    """
+    # Create test data
+    condition_list = [(100, 100, 100), (150, 150, 150), (200, 200, 200)]
+    img1_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]  # Red, Green, Blue
+    img2_list = [(0, 0, 0), (128, 128, 128), (255, 255, 255)]  # Black, Gray, White
+
+    generator1 = generator_from_image(img1_list)
+    generator2 = generator_from_image(img2_list)
+
+    # Test 1: Normal operation
+    try:
+        result = combine_images(condition_list, gradient_condition, generator1, generator2)
+        assert len(result) == 3, "Result should have same length as condition_list"
+    except Exception as e:
+        assert False, f"Normal operation should not raise exception: {e}"
+
+    # Test 2: condition_func raises exception
+    def bad_condition_func(pixel):
+        if pixel[0] > 100:
+            raise ValueError("Condition function error")
+        return pixel[0] / 255.0
+
+    try:
+        combine_images(condition_list, bad_condition_func, generator1, generator2)
+        assert False, "Should raise ValueError when condition_func fails"
+    except ValueError as e:
+        assert "condition_func" in str(e) or "Error in combine_images" in str(e)
+
+    # Test 3: generator1 raises exception
+    def bad_generator1(index):
+        if index == 1:
+            raise IndexError("Generator1 error")
+        return img1_list[index]
+
+    try:
+        combine_images(condition_list, gradient_condition, bad_generator1, generator2)
+        assert False, "Should raise ValueError when generator1 fails"
+    except ValueError as e:
+        assert "generator1" in str(e) or "Error in combine_images" in str(e)
+
+    # Test 4: generator2 raises exception
+    def bad_generator2(index):
+        if index == 2:
+            raise IndexError("Generator2 error")
+        return img2_list[index]
+
+    try:
+        combine_images(condition_list, gradient_condition, generator1, bad_generator2)
+        assert False, "Should raise ValueError when generator2 fails"
+    except ValueError as e:
+        assert "generator2" in str(e) or "Error in combine_images" in str(e)
+
+    # Test 5: Empty condition list
+    try:
+        result = combine_images([], gradient_condition, generator1, generator2)
+        assert result == [], "Empty condition list should return empty list"
+    except Exception as e:
+        assert False, f"Empty condition list should work: {e}"
+
+    print("combine_images passed all tests.")
 
 
 if __name__ == '__main__':
-    test_image_constrain()
+    test_is_black()
+    test_generator_from_image()
+    test_combine_images()

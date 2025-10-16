@@ -1,6 +1,8 @@
 import cv2
-from lab5a1 import cvimg_to_list
+
 from cvlib import greyscale_list_to_cvimg
+from lab5a1 import cvimg_to_list
+
 
 def pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh):
     """
@@ -23,20 +25,26 @@ def pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh):
         """
         Determines if a given HSV pixel is within the predefined HSV constraints.
 
-        :param pixel: tuple - A 3-tuple of integers (h, s, v), representing the hue,
-                       saturation, and value of a pixel.
-        :return: int - 1 if the pixel is within the HSV range, else 0.
+        :param pixel: tuple - A 3-tuple of integers (h, s, v)
+        :return: int - 1 if pixel within range, else 0
+        :raises: ValueError if pixel is not a valid 3-tuple
         """
+        # Check if input is valid
+        #   - expecting a tuple of length 3 with int values
+        if not isinstance(pixel, tuple) or len(pixel) != 3:
+            raise ValueError("Pixel must be a tuple with 3 numbers")
+
+        for value in pixel:
+            if not isinstance(value, int):
+                raise ValueError("Pixel values must be integers")
+
         h, s, v = pixel
-        return int(
-            hlow < h < hhigh
-            and slow < s < shigh
-            and vlow < v < vhigh
-        )
+        return int(hlow < h < hhigh and slow < s < shigh and vlow < v < vhigh)
 
     return is_black
 
-#test
+
+# test
 if __name__ == "__main__":
     hsv_plane = cv2.cvtColor(cv2.imread("image.png"), cv2.COLOR_BGR2HSV)
     plane_list = cvimg_to_list(hsv_plane)
