@@ -7,35 +7,40 @@ from lab5.lab5b2 import generator_from_image
 def gradient_condition(pixel):
     """
     Computes a normalized brightness value for a given pixel.
-    For a grayscale image, returns a value between 0 and 1 where:
-    - Black pixel (0, 0, 0) returns 0
-    - White pixel (255, 255, 255) returns 1
-    - Gray pixel (128, 128, 128) returns 0.5
+
     """
-    # For grayscale images, all channels should be equal
-    return pixel[0] / 255.0
+
+    # Check that pixel has 3 color values and that pixel is a tuple
+    if len(pixel) != 3:
+        raise IndexError("Pixel must contain 3 numbers")
+    if not isinstance(pixel, tuple):
+        raise IndexError("Pixel must be a tuple")
+
+    #Checks the that the values within pixel are color values
+    for colors in pixel:
+        if not isinstance(colors, int):
+            raise TypeError("All HSV parameters must be integers")
+        if colors < 0 or colors > 255:
+            raise ValueError("All HSV parameters must be between 0 and 255")
+
+    return (pixel[0]+pixel[1]+pixel[2]) / (255.0*3)
 
 
-def combine_images(condition_list, condition_func, generator1, generator2):
+
+
+def combine_images(
+        condition_list, gradient_condition, generator1, generator2):
     """
     Blends 2 images with the help of a third blend mask image.
+
     """
     result = []
     for i, pixel in enumerate(condition_list):
-        # Get condition value with error handling
         try:
-            condition_val = condition_func(pixel)
-        except ValueError:
-            raise ValueError(
-                "Error in combine_images: condition_func raised ValueError")
-        except IndexError:
-            raise ValueError(
-                "Error in combine_images: condition_func raised IndexError")
-        except TypeError:
-            raise ValueError(
-                "Error in combine_images: condition_func raised TypeError")
+            condition_val = gradient_condition(pixel)
+        except (IndexError, ValueError, TypeError):
+            raise ValueError("Error in gradient_condition for value", pixel)
 
-        # Get pixels from generators with error handling
         try:
             pixel1 = generator1(i)
         except IndexError:
@@ -82,10 +87,8 @@ if __name__ == "__main__":
     generator2 = generator_from_image(img2_list)
 
     # Kombinera bilderna
-    result = combine_images(mask_list,
-                            gradient_condition,
-                            generator1,
-                            generator2)
+    result = combine_images(
+        mask_list, gradient_condition, generator1, generator2)
 
     # Visa resultatet
     new_img = rgblist_to_cvimg(result, img1.shape[0], img1.shape[1])

@@ -26,14 +26,15 @@ def combine_images(hsv_img_list, condition, condition_img, start_img):
 
 if __name__ == "__main__":
     """
-    Test function that combines a plane image with a starry sky effect using
-    HSV color filtering.
+    Test function that combines a plane image with a starry sky
+     effect using HSV color filtering.
     """
     # Read an image
     plane_img = cv2.imread("plane.jpg")
 
     # Create a filter that identifies the sky
-    condition = pixel_constraint(100, 150, 50, 200, 100, 255)
+    condition = pixel_constraint(
+        100, 150, 50, 200, 100, 255)
 
     # Convert the original image to a list of HSV colors
     hsv_list = cvimg_to_list(cv2.cvtColor(plane_img, cv2.COLOR_BGR2HSV))
@@ -51,6 +52,7 @@ if __name__ == "__main__":
     result = combine_images(hsv_list, condition, generator1, generator2)
 
     # Convert the result to a real image and display it
-    new_img = rgblist_to_cvimg(result, plane_img.shape[0], plane_img.shape[1])
+    new_img = rgblist_to_cvimg(
+        result, plane_img.shape[0], plane_img.shape[1])
     cv2.imshow('Final image', new_img)
     cv2.waitKey(0)

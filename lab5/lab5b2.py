@@ -24,8 +24,8 @@ def generator_from_image(image_list):
         """
         if index < 0 or index >= len(image_list):
             raise IndexError(
-                f"Index {index} is out of bounds for image list of length "+
-                f"{len(image_list)}")
+                f"Index {index} is out of bounds for image list of length ",
+                len(image_list))
         return image_list[index]
 
     return get_pixel
@@ -46,7 +46,6 @@ if __name__ == "__main__":
     new_list = [generator(i) for i in range(len(orig_list))]
 
     cv2.imshow('original', orig_img)
-    cv2.imshow('new', rgblist_to_cvimg(new_list,
-                                       orig_img.shape[0],
-                                       orig_img.shape[1]))
+    cv2.imshow('new', rgblist_to_cvimg(
+        new_list, orig_img.shape[0], orig_img.shape[1]))
     cv2.waitKey(0)

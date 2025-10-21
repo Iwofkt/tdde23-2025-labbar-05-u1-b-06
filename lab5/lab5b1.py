@@ -38,17 +38,23 @@ def pixel_constraint(hlow, hhigh, slow, shigh, vlow, vhigh):
         :return: int - 1 if pixel within range, else 0
         :raises: ValueError if pixel is not a valid 3-tuple
         """
-        # Check if input is valid
-        #   - expecting a tuple of length 3 with int values
-        if not isinstance(pixel, tuple) or len(pixel) != 3:
-            raise ValueError("Pixel must be a tuple with 3 numbers")
 
-        for value in pixel:
-            if not isinstance(value, int):
-                raise ValueError("Pixel values must be integers")
+        # Check that pixel has 3 color values and that pixel is a tuple
+        if len(pixel) != 3:
+            raise ValueError("Pixel must contain 3 numbers")
+        if not isinstance(pixel, tuple):
+            raise TypeError("Pixel must be a tuple")
+
+        # Checks the that the values within pixel are color values
+        for colors in pixel:
+            if not isinstance(colors, int):
+                raise TypeError("All HSV parameters must be integers")
+            if colors < 0 or colors > 255:
+                raise ValueError("All HSV parameters must be between 0 and 255")
 
         h, s, v = pixel
-        return int(hlow < h < hhigh and slow < s < shigh and vlow < v < vhigh)
+        return int(
+            hlow < h < hhigh and slow < s < shigh and vlow < v < vhigh)
 
     return is_black
 
