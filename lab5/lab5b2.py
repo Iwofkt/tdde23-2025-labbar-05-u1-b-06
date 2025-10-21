@@ -5,10 +5,12 @@ from lab5b1 import cvimg_to_list
 
 def generator_from_image(image_list):
     """
-    Creates a generator function that returns pixel colors from an image list by index.
+    Creates a generator function that returns pixel colors from an
+    image list by index.
 
     :param image_list: list: List of BGR pixel values from an image
-    :return: function: Generator function that takes an index and returns the corresponding pixel color
+    :return: function: Generator function that takes an index and
+     returns the corresponding pixel color
     :raises: IndexError if index is out of bounds
     """
 
@@ -21,7 +23,9 @@ def generator_from_image(image_list):
         :raises: IndexError if index is out of bounds
         """
         if index < 0 or index >= len(image_list):
-            raise IndexError(f"Index {index} is out of bounds for image list of length {len(image_list)}")
+            raise IndexError(
+                f"Index {index} is out of bounds for image list of length "+
+                f"{len(image_list)}")
         return image_list[index]
 
     return get_pixel
@@ -30,7 +34,8 @@ def generator_from_image(image_list):
 # test
 if __name__ == "__main__":
     """
-    Test function for generator_from_image by loading an image, creating a generator,
+    Test function for generator_from_image by loading an image,
+    creating a generator,
     and displaying both original and reconstructed images.
     """
     orig_img = cv2.imread("image.png")
@@ -41,5 +46,7 @@ if __name__ == "__main__":
     new_list = [generator(i) for i in range(len(orig_list))]
 
     cv2.imshow('original', orig_img)
-    cv2.imshow('new', rgblist_to_cvimg(new_list, orig_img.shape[0], orig_img.shape[1]))
+    cv2.imshow('new', rgblist_to_cvimg(new_list,
+                                       orig_img.shape[0],
+                                       orig_img.shape[1]))
     cv2.waitKey(0)

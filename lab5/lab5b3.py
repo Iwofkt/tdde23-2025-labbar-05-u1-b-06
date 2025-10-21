@@ -7,13 +7,18 @@ from lab5.lab5b2 import generator_from_image
 
 def combine_images(hsv_img_list, condition, condition_img, start_img):
     """
-    Combines two images based on a condition, using pixels from one image where the condition is true
+    Combines two images based on a condition,using pixels from one
+    image where the condition is true
     and from the other image where the condition is false.
 
-    :param hsv_img_list: list: List of HSV pixel values used for condition checking
-    :param condition: function: Function that takes an HSV pixel and returns True/False
-    :param condition_img: function: Generator function that provides pixels when condition is True
-    :param start_img: function: Generator function that provides pixels when condition is False
+    :param hsv_img_list: list: List of HSV pixel values used for
+     condition checking
+    :param condition: function: Function that takes an HSV pixel and
+     returns True/False
+    :param condition_img: function: Generator function that provides
+     pixels when condition is True
+    :param start_img: function: Generator function that provides
+     pixels when condition is False
     :return: list: Combined list of RGB pixel values
     """
     return [condition_img(i) if condition(hsv_pixel) else start_img(i)
@@ -21,7 +26,8 @@ def combine_images(hsv_img_list, condition, condition_img, start_img):
 
 if __name__ == "__main__":
     """
-    Test function that combines a plane image with a starry sky effect using HSV color filtering.
+    Test function that combines a plane image with a starry sky effect using
+    HSV color filtering.
     """
     # Read an image
     plane_img = cv2.imread("plane.jpg")

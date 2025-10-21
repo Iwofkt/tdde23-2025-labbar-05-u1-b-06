@@ -7,7 +7,7 @@ def cvimg_to_list(image):
     Creates a list of the BGR values for each pixel in an image.
 
     :param image: numpy array: image to interpret
-    :return: list: List of BGR vales for each pixel
+    :return: list: List of BGR values for each pixel in image
     """
     return [tuple(map(int, pixel)) for row in image for pixel in row]
 
@@ -24,7 +24,8 @@ if __name__ == "__main__":
     print(bgr_test_list)
 
     test_height, test_width = test_image.shape[:2]
-    cv2.imshow("test", rgblist_to_cvimg(bgr_test_list, test_height, test_width))
+    cv2.imshow("test",
+               rgblist_to_cvimg(bgr_test_list, test_height, test_width))
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

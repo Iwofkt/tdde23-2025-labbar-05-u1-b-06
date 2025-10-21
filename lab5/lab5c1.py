@@ -1,3 +1,4 @@
+
 from lab5.lab5b2 import generator_from_image
 from lab5.lab5b4 import combine_images, gradient_condition
 from lab5b1 import pixel_constraint
@@ -103,10 +104,10 @@ def test_combine_images():
     Test combine_images function for both valid behavior and exception handling
     when inner functions raise exceptions.
     """
-    # Create test data
+    # Test data
     condition_list = [(100, 100, 100), (150, 150, 150), (200, 200, 200)]
-    img1_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]  # Red, Green, Blue
-    img2_list = [(0, 0, 0), (128, 128, 128), (255, 255, 255)]  # Black, Gray, White
+    img1_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+    img2_list = [(0, 0, 0), (128, 128, 128), (255, 255, 255)]
 
     generator1 = generator_from_image(img1_list)
     generator2 = generator_from_image(img2_list)
@@ -115,51 +116,47 @@ def test_combine_images():
     try:
         result = combine_images(condition_list, gradient_condition, generator1, generator2)
         assert len(result) == 3, "Result should have same length as condition_list"
-    except Exception as e:
-        assert False, f"Normal operation should not raise exception: {e}"
+    except ValueError:
+        assert False, "Normal operation should not raise ValueError"
 
-    # Test 2: condition_func raises exception
-    def bad_condition_func(pixel):
-        if pixel[0] > 100:
-            raise ValueError("Condition function error")
-        return pixel[0] / 255.0
-
-    try:
-        combine_images(condition_list, bad_condition_func, generator1, generator2)
-        assert False, "Should raise ValueError when condition_func fails"
-    except ValueError as e:
-        assert "condition_func" in str(e) or "Error in combine_images" in str(e)
-
-    # Test 3: generator1 raises exception
-    def bad_generator1(index):
+    # Test 2: Generator raises IndexError
+    def bad_generator(index):
         if index == 1:
-            raise IndexError("Generator1 error")
-        return img1_list[index]
+            raise IndexError("Index out of bounds")
+        return 255, 0, 0
 
     try:
-        combine_images(condition_list, gradient_condition, bad_generator1, generator2)
-        assert False, "Should raise ValueError when generator1 fails"
+        combine_images(condition_list, gradient_condition, bad_generator, generator2)
+        assert False, "Should raise ValueError when generator raises IndexError"
     except ValueError as e:
-        assert "generator1" in str(e) or "Error in combine_images" in str(e)
+        assert "Error in combine_images: generator1 raised IndexError" in str(e)
 
-    # Test 4: generator2 raises exception
-    def bad_generator2(index):
-        if index == 2:
-            raise IndexError("Generator2 error")
-        return img2_list[index]
+    # Test 3: Condition function raises ValueError
+    def bad_condition(pixel):
+        raise ValueError(f"Invalid pixel {pixel}")
 
     try:
-        combine_images(condition_list, gradient_condition, generator1, bad_generator2)
-        assert False, "Should raise ValueError when generator2 fails"
+        combine_images(condition_list, bad_condition, generator1, generator2)
+        assert False, "Should raise ValueError when condition function raises ValueError"
     except ValueError as e:
-        assert "generator2" in str(e) or "Error in combine_images" in str(e)
+        assert "Error in combine_images: condition_func raised ValueError" in str(e)
+
+    # Test 4: Condition function raises TypeError
+    def bad_condition_type(pixel):
+        raise TypeError(f"Type error{pixel}")
+
+    try:
+        combine_images(condition_list, bad_condition_type, generator1, generator2)
+        assert False, "Should raise ValueError when condition function raises TypeError"
+    except ValueError as e:
+        assert "Error in combine_images: condition_func raised TypeError" in str(e)
 
     # Test 5: Empty condition list
     try:
         result = combine_images([], gradient_condition, generator1, generator2)
         assert result == [], "Empty condition list should return empty list"
-    except Exception as e:
-        assert False, f"Empty condition list should work: {e}"
+    except ValueError:
+        assert False, "Empty condition list should not raise ValueError"
 
     print("combine_images passed all tests.")
 
