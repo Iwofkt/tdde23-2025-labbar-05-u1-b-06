@@ -34,12 +34,14 @@ def test_is_black():
         ((150, 25, 150), 0,
          "Pixel with S=25 (below range 50-150) should return 0"),
         ((150, 100, 50), 0,
-         "Pixel with V=50 (below range 75-225) should return 0"),
+         "Pixel with V=50 (below range 75-225) should return 0")
     ]
 
     for pixel, expected, description in edge_tests:
         result = is_black(pixel)
-        assert result == expected, f"{description}. Got {result} for pixel {pixel}"
+        assert result == expected, (
+            f"{description}. Got {result} for pixel {pixel}"
+        )
 
 
     # Test 2: Invalid inputs using test list
@@ -64,11 +66,13 @@ def test_is_black():
 
 def test_generator_from_image():
     """
-    Test the function returned by generator_from_image for both valid behavior
-    and proper exception handling when index is out of bounds.
+    Test the function returned by generator_from_image for both valid
+    behavior and proper exception handling when index is out of bounds.
     """
     # Create a simple test image list
-    test_image_list = [(0, 0, 0), (255, 255, 255), (128, 128, 128), (64, 64, 64)]
+    test_image_list = [
+        (0, 0, 0), (255, 255, 255), (128, 128, 128), (64, 64, 64)
+    ]
 
     generator = generator_from_image(test_image_list)
 
@@ -111,8 +115,8 @@ def test_generator_from_image():
 
 def test_combine_images():
     """
-    Test combine_images function for both valid behavior and exception handling
-    when inner functions raise exceptions.
+    Test combine_images function for both valid behavior and
+    exception handling when inner functions raise exceptions.
     """
     # Test data
     condition_list = [(100, 100, 100), (150, 150, 150), (200, 200, 200)]
@@ -130,7 +134,8 @@ def test_combine_images():
             "Result should have same length as condition_list"
     except ValueError:
         raise AssertionError(
-            "Normal operation should not raise ValueError")
+            "Normal operation should not raise ValueError"
+        )
 
     # Test 2: Generator raises IndexError
     def bad_generator(index):
@@ -142,7 +147,8 @@ def test_combine_images():
         combine_images(
             condition_list, gradient_condition, bad_generator, generator2)
         raise AssertionError(
-            "Should raise ValueError when generator raises IndexError")
+            "Should raise ValueError when generator raises IndexError"
+        )
     except ValueError:
         pass
 
@@ -176,7 +182,9 @@ def test_combine_images():
             [], gradient_condition, generator1, generator2)
         assert result == [], "Empty condition list should return empty list"
     except ValueError:
-        raise AssertionError("Empty condition list should not raise ValueError")
+        raise AssertionError(
+            "Empty condition list should not raise ValueError"
+        )
 
     print("combine_images passed all tests.")
 
