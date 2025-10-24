@@ -18,6 +18,12 @@ def test_is_black():
         100, 200, 50, 150, 75, 225)
 
     # Test 1: Valid pixel cases
+    """
+    Tests formated to catch syntax errors like <= insted of < by
+    testing values on, above and below set constraints. Also testing
+    normal functionality with first test and testing H, S and V
+    separately with the three last tests.
+    """
     edge_tests = [
         ((150, 100, 150), 1,
          "Pixel within all ranges should return 1"),
@@ -45,6 +51,10 @@ def test_is_black():
 
 
     # Test 2: Invalid inputs using test list
+    """
+    Testing different invalid datatypes to prevent unexpected function
+    results.
+    """
     invalid_inputs = [
         ("not_a_tuple", "Non-tuple input should raise ValueError"),
         ((1, 2), "2-tuple (too short) should raise ValueError"),
@@ -77,6 +87,9 @@ def test_generator_from_image():
     generator = generator_from_image(test_image_list)
 
     # Test 1: Valid indices using test list
+    """
+    Testing normal functionality for all indices in and image list
+    """
     valid_tests = [
         (0, (0, 0, 0), "Index 0 should return first pixel"),
         (1, (255, 255, 255), "Index 1 should return second pixel"),
@@ -90,6 +103,10 @@ def test_generator_from_image():
             f"{description}. Got {result} for index {index}"
 
     # Test 2: Invalid indices - should raise IndexError
+    """
+    Testing invalid indices above and below image lists max and min
+    indices
+    """
     invalid_tests = [
         (4, "Index 4 (out of bounds) should raise IndexError"),
         (-1, "Index -1 (negative index) should raise IndexError")
@@ -103,6 +120,10 @@ def test_generator_from_image():
             pass
 
     # Test 3: Empty image list
+    """
+    Ensuring that if given image list is empty function throws
+    IndexError
+    """
     empty_generator = generator_from_image([])
     try:
         empty_generator(0)
@@ -127,6 +148,10 @@ def test_combine_images():
     generator2 = generator_from_image(img2_list)
 
     # Test 1: Normal operation
+    """
+    Normal operation with valid maximum, minimum and normal values
+    for different pixels in different input data.
+    """
     try:
         result = combine_images(
             condition_list, gradient_condition, generator1, generator2)
