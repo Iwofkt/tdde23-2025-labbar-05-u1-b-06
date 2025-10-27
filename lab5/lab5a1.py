@@ -6,7 +6,8 @@ from cvlib import rgblist_to_cvimg
 
 def cvimg_to_list(image: np.ndarray) -> List[Tuple[int, int, int]]:
     """
-    Create a list of tuples with the BGR values for each pixel in an image.
+    Create a list of tuples with the BGR values for each pixel in an
+    image.
 
     :param image: numpy array representing the image to interpret
     :return: list of BGR values for each pixel in the image

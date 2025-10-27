@@ -13,7 +13,8 @@ def unsharp_mask(dimension: int) -> list[list[float]]:
 
     def calculate_gaussian_value(x: int, y: int)-> float:
         """
-        Calculates Gaussian blur value using negative Gaussian formula.
+        Calculates Gaussian blur value using negative Gaussian
+        formula.
 
         :param x: int: x-coordinate relative to center
         :param y: int: y-coordinate relative to center
