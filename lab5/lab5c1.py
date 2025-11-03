@@ -18,12 +18,6 @@ def test_is_black():
         100, 200, 50, 150, 75, 225)
 
     # Test 1: Valid pixel cases
-    """
-    Tests formated to catch syntax errors like <= insted of < by
-    testing values on, above and below set constraints. Also testing
-    normal functionality with first test and testing H, S and V
-    separately with the three last tests.
-    """
     edge_tests = [
         ((150, 100, 150), 1,
          "Pixel within all ranges should return 1"),
@@ -40,21 +34,14 @@ def test_is_black():
         ((150, 25, 150), 0,
          "Pixel with S=25 (below range 50-150) should return 0"),
         ((150, 100, 50), 0,
-         "Pixel with V=50 (below range 75-225) should return 0")
+         "Pixel with V=50 (below range 75-225) should return 0"),
     ]
 
-    for pixel, expected, description in edge_tests:
+    for pixel, expected, desc in edge_tests:
         result = is_black(pixel)
-        assert result == expected, (
-            f"{description}. Got {result} for pixel {pixel}"
-        )
-
+        assert result == expected, f"{desc}. Got {result} for pixel {pixel}"
 
     # Test 2: Invalid inputs using test list
-    """
-    Testing different invalid datatypes to prevent unexpected function
-    results.
-    """
     invalid_inputs = [
         ("not_a_tuple", "Non-tuple input should raise ValueError"),
         ((1, 2), "2-tuple (too short) should raise ValueError"),
@@ -70,26 +57,26 @@ def test_is_black():
         except (ValueError, TypeError):
             pass
 
-
     print("is_black passed all tests.")
 
 
 def test_generator_from_image():
     """
     Test the function returned by generator_from_image for both valid
-    behavior and proper exception handling when index is out of bounds.
+    behavior
+    and proper exception handling when index is out of bounds.
     """
     # Create a simple test image list
     test_image_list = [
-        (0, 0, 0), (255, 255, 255), (128, 128, 128), (64, 64, 64)
+        (0, 0, 0),
+        (255, 255, 255),
+        (128, 128, 128),
+        (64, 64, 64)
     ]
 
     generator = generator_from_image(test_image_list)
 
     # Test 1: Valid indices using test list
-    """
-    Testing normal functionality for all indices in and image list
-    """
     valid_tests = [
         (0, (0, 0, 0), "Index 0 should return first pixel"),
         (1, (255, 255, 255), "Index 1 should return second pixel"),
@@ -97,16 +84,11 @@ def test_generator_from_image():
         (3, (64, 64, 64), "Index 3 should return fourth pixel")
     ]
 
-    for index, expected, description in valid_tests:
+    for index, expected, descr in valid_tests:
         result = generator(index)
-        assert result == expected,\
-            f"{description}. Got {result} for index {index}"
+        assert result == expected, f"{descr}. Got {result} for index {index}"
 
     # Test 2: Invalid indices - should raise IndexError
-    """
-    Testing invalid indices above and below image lists max and min
-    indices
-    """
     invalid_tests = [
         (4, "Index 4 (out of bounds) should raise IndexError"),
         (-1, "Index -1 (negative index) should raise IndexError")
@@ -120,10 +102,6 @@ def test_generator_from_image():
             pass
 
     # Test 3: Empty image list
-    """
-    Ensuring that if given image list is empty function throws
-    IndexError
-    """
     empty_generator = generator_from_image([])
     try:
         empty_generator(0)
@@ -136,8 +114,8 @@ def test_generator_from_image():
 
 def test_combine_images():
     """
-    Test combine_images function for both valid behavior and
-    exception handling when inner functions raise exceptions.
+    Test combine_images function for both valid behavior and exception
+    handling when inner functions raise exceptions.
     """
     # Test data
     condition_list = [(100, 100, 100), (150, 150, 150), (200, 200, 200)]
@@ -148,19 +126,15 @@ def test_combine_images():
     generator2 = generator_from_image(img2_list)
 
     # Test 1: Normal operation
-    """
-    Normal operation with valid maximum, minimum and normal values
-    for different pixels in different input data.
-    """
     try:
         result = combine_images(
             condition_list, gradient_condition, generator1, generator2)
-        assert len(result) == 3,\
-            "Result should have same length as condition_list"
+        assert (
+            len(result) == 3
+            ), "Result should have same length as condition_list"
     except ValueError:
         raise AssertionError(
-            "Normal operation should not raise ValueError"
-        )
+            "Normal operation should not raise ValueError")
 
     # Test 2: Generator raises IndexError
     def bad_generator(index):
@@ -172,8 +146,7 @@ def test_combine_images():
         combine_images(
             condition_list, gradient_condition, bad_generator, generator2)
         raise AssertionError(
-            "Should raise ValueError when generator raises IndexError"
-        )
+            "Should raise ValueError when generator raises IndexError")
     except ValueError:
         pass
 
@@ -184,8 +157,9 @@ def test_combine_images():
     try:
         combine_images(
             condition_list, bad_condition, generator1, generator2)
-        raise AssertionError("Should raise ValueError when condition function"
-                       " raises ValueError")
+        raise AssertionError(
+            "Should raise ValueError when condition function raises ValueError"
+            )
     except ValueError:
         pass
 
@@ -196,8 +170,9 @@ def test_combine_images():
     try:
         combine_images(
             condition_list, bad_condition_type, generator1, generator2)
-        raise AssertionError("Should raise ValueError when condition function"
-                       " raises TypeError")
+        raise AssertionError(
+            "Should raise ValueError when condition function raises TypeError"
+            )
     except ValueError:
         pass
 
@@ -210,6 +185,8 @@ def test_combine_images():
         raise AssertionError(
             "Empty condition list should not raise ValueError"
         )
+
+    # Test 6: Test to see if pixels are combine correctly
 
     print("combine_images passed all tests.")
 
