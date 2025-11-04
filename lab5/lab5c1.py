@@ -66,7 +66,7 @@ def test_generator_from_image():
     behavior
     and proper exception handling when index is out of bounds.
     """
-    # Create a simple test image list
+
     test_image_list = [
         (0, 0, 0),
         (255, 255, 255),
@@ -130,7 +130,7 @@ def test_combine_images():
     generator1 = generator_from_image(img1_list)
     generator2 = generator_from_image(img2_list)
 
-    # Test 1: Normal operation
+    # Test 1: Normal operation, see if output is as expected
     try:
         result = combine_images(
             condition_list, gradient_condition, generator1, generator2)
@@ -196,9 +196,6 @@ def test_combine_images():
         raise AssertionError(
             "Empty condition list should not raise ValueError"
         )
-
-    # Test 6: Test to see if pixels are combine correctly
-
     print("combine_images passed all tests.")
 
 

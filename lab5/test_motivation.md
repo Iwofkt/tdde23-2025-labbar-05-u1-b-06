@@ -118,11 +118,8 @@ except (IndexError, ValueError, TypeError):
 This catches exceptions from gradient_condition and converts them to a ValueErrors because within combine_images gradient_condition becomes a faulty value if an error appers within it. It catches IndexError, ValueError, TypeError because these are the errors that can be raised within gradient_condition.
 
 
-
-
-
-
 ```python
 except IndexError:
     raise ValueError("Error in combine_images: generator<i> raised IndexError")
 ```
+Catches IndexError witch is the sole exception generators raise. Converts to ValueError to maintain combine_images' error abstraction.
