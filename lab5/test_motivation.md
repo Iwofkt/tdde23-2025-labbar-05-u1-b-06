@@ -144,7 +144,7 @@ Ensures that the combine_images function raises an error is the input condition_
 ```python
 if not isinstance(pixel, tuple): raise TypeError("Pixel must be a tuple")
 ```
-This ensures input is proper, pixel like, tuple structure and raises an error for incorrect data types. Raise TypeError because its a question of correct data type
+This ensures input is proper, pixel like, tuple structure and raises an error for incorrect data types. Raise TypeError because its a question of correct data type.
 
 ```python
 if len(pixel) != 3: raise ValueError("Pixel must contain exactly 3 numbers")
