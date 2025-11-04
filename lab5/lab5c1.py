@@ -162,12 +162,12 @@ def test_combine_images():
         pass
 
     # Test 3: Condition function raises ValueError
-    def bad_condition(pixel):
+    def bad_condition_value(pixel):
         raise ValueError(f"Invalid pixel {pixel}")
 
     try:
         combine_images(
-            condition_list, bad_condition, generator1, generator2)
+            condition_list, bad_condition_value, generator1, generator2)
         raise AssertionError(
             "Should raise ValueError when condition function raises ValueError"
             )
