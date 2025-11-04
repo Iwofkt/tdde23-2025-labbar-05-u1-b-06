@@ -81,7 +81,7 @@ def test_generator_from_image():
         (0, (0, 0, 0), "Index 0 should return first pixel"),
         (1, (255, 255, 255), "Index 1 should return second pixel"),
         (2, (128, 128, 128), "Index 2 should return third pixel"),
-        (3, (200, 110 ,50), "Index 3 should return fourth pixel")
+        (3, (200, 110, 50), "Index 3 should return fourth pixel")
     ]
 
     for index, expected, descr in valid_tests:
@@ -118,10 +118,14 @@ def test_combine_images():
     handling when inner functions raise exceptions.
     """
     # Test data
-    condition_list = [(100, 100, 100), (150, 150, 150), (200, 200, 200), (10,55,200)]
-    img1_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (250,101,239)]
+    condition_list = [
+        (100, 100, 100),
+        (150, 150, 150),
+        (200, 200, 200),
+        (10, 55, 200)
+        ]
+    img1_list = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (250, 101, 239)]
     img2_list = [(0, 0, 0), (128, 128, 128), (255, 255, 255), (222, 245, 100)]
-
 
     generator1 = generator_from_image(img1_list)
     generator2 = generator_from_image(img2_list)
@@ -136,7 +140,7 @@ def test_combine_images():
         assert result == (
             [(100, 0, 0), (52, 202, 52), (55, 55, 255), (231, 195, 148)]
         ),(
-            "Unexpected output, got:", result ,"expected:",
+            "Unexpected output, got:", result, "expected:",
             [(100, 0, 0), (52, 202, 52), (55, 55, 255), (231, 195, 148)]
         )
     except ValueError:

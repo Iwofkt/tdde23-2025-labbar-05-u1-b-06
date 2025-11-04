@@ -33,6 +33,7 @@ def generator_from_image(
 
     return get_pixel
 
+
 # Test
 if __name__ == "__main__":
     """
