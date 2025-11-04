@@ -11,7 +11,7 @@ def unsharp_mask(dimension: int) -> list[list[float]]:
     :return: list: A 2-dimensional unsharp mask
     """
 
-    def calculate_gaussian_value(x: int, y: int)-> float:
+    def calculate_gaussian_value(x: int, y: int) -> float:
         """
         Calculates Gaussian blur value using negative Gaussian
         formula.
@@ -41,7 +41,7 @@ def unsharp_mask(dimension: int) -> list[list[float]]:
     mask: List[List[float]] = [
         [
             calculate_gaussian_value(x - center, y - center)
-         for x in range(dimension)
+            for x in range(dimension)
         ]
         for y in range(dimension)
     ]

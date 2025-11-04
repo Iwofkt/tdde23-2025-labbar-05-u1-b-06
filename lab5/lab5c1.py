@@ -139,7 +139,7 @@ def test_combine_images():
             ), "Result should have same length as condition_list"
         assert result == (
             [(100, 0, 0), (52, 202, 52), (55, 55, 255), (231, 195, 148)]
-        ),(
+        ), (
             "Unexpected output, got:", result, "expected:",
             [(100, 0, 0), (52, 202, 52), (55, 55, 255), (231, 195, 148)]
         )
